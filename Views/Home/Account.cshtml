@@ -1,0 +1,49 @@
+@using bankAccounts.Models
+@model BankAccountView
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1>Welcome, @Model.CurrentUser.FirstName</h1>
+        <a href="/logout">Logout</a>
+        <p>Current Balance: <div>$@Model.CurrentUser.Balance.ToString("n2")</div></p>
+        
+        <form asp-action="ChangingBalance" asp-route-UserId="@Model.CurrentUser.UserId" asp-controller="Home" method="POST">
+
+            <span asp-validation-for="UserTransaction.Amount"></span>
+            <label asp-for="UserTransaction.Amount">Deposit/Withdraw</label>
+            <input type="number" step="0.01" asp-for="UserTransaction.Amount">
+
+            <input type="hidden" value="@Model.CurrentUser.UserId" asp-for="UserTransaction.UserId">
+
+            <input type="submit" value="Submit">
+
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach(Transaction trans in Model.AllTransactions)
+                    {
+                        <tr>
+                            <td>$@trans.Amount.ToString("n2")</td>
+                            <td>@trans.CreatedAt</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </body>
+</html>
